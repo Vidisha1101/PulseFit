@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Fitness Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+
+
+    <!-- App View -->
+    <div class="app-container" id="app-view">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="logo">
+                <i data-lucide="activity"></i>
+                <span>PulseFit</span>
+            </div>
+            <div class="user-profile">
+                <i data-lucide="user-circle"></i>
+                <span id="current-user-name">User</span>
+            </div>
+            <ul class="nav-links">
+                <li class="active" data-tab="dashboard">
+                    <i data-lucide="layout-dashboard"></i>
+                    <span>Dashboard</span>
+                </li>
+                <li data-tab="analytics">
+                    <i data-lucide="bar-chart-2"></i>
+                    <span>Data Analysis</span>
+                </li>
+                <li data-tab="log-data">
+                    <i data-lucide="plus-circle"></i>
+                    <span>Log Data</span>
+                </li>
+
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard View -->
+            <section id="dashboard" class="view active">
+                <header class="view-header">
+                    <h1>Daily Dashboard</h1>
+                    <p class="date-display" id="current-date"></p>
+                </header>
+
+                <div class="dashboard-grid">
+                    <!-- Smart Insights (New) -->
+                    <div class="card glass full-width insights-card">
+                        <div class="card-header">
+                            <h3>Smart Insights</h3>
+                            <i data-lucide="lightbulb" style="color: #f59e0b;"></i>
+                        </div>
+                        <ul id="smart-insights-list" class="insights-list">
+                            <!-- Injected by JS -->
+                        </ul>
+                    </div>
+
+                    <!-- Readiness Score -->
+                    <div class="card readiness-card glass">
+                        <div class="card-header">
+                            <h3>Readiness Score</h3>
+                            <i data-lucide="zap"></i>
+                        </div>
+                        <div class="readiness-content">
+                            <div class="score-circle">
+                                <svg viewBox="0 0 36 36" class="circular-chart green" id="readiness-svg">
+                                    <path class="circle-bg" d="M18 2.0845
+                                        a 15.9155 15.9155 0 0 1 0 31.831
+                                        a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                    <path class="circle" id="readiness-path" stroke-dasharray="0, 100" d="M18 2.0845
+                                        a 15.9155 15.9155 0 0 1 0 31.831
+                                        a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                    <text x="18" y="20.35" class="percentage" id="readiness-value">--</text>
+                                </svg>
+                            </div>
+                            <div class="readiness-info">
+                                <p id="readiness-text">Log your data to calculate your readiness for today.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Daily Metrics -->
+                    <div class="card glass metric-card">
+                        <div class="card-header">
+                            <h3>Steps</h3>
+                            <i data-lucide="footprints"></i>
+                        </div>
+                        <div class="metric-value" id="dash-steps">0</div>
+                    </div>
+
+                    <div class="card glass metric-card">
+                        <div class="card-header">
+                            <h3>Sleep</h3>
+                            <i data-lucide="moon"></i>
+                        </div>
+                        <div class="metric-value" id="dash-sleep">0h</div>
+                    </div>
+
+                    <div class="card glass metric-card">
+                        <div class="card-header">
+                            <h3>Water</h3>
+                            <i data-lucide="droplet"></i>
+                        </div>
+                        <div class="metric-value" id="dash-water">0 L</div>
+                    </div>
+
+                    <!-- Muscle Recovery Map -->
+                    <div class="card glass muscle-map-card">
+                        <div class="card-header">
+                            <h3>Muscle Recovery Heatmap</h3>
+                            <i data-lucide="user"></i>
+                        </div>
+                        <div class="muscle-map-container" id="muscle-map">
+                            <!-- Injected SVG -->
+                        </div>
+                        <div class="muscle-legend">
+                            <span class="legend-item"><span class="color-box fresh"></span> Fresh</span>
+                            <span class="legend-item"><span class="color-box sore"></span> Fatigued</span>
+                            <span class="legend-item"><span class="color-box exhausted"></span> Exhausted</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Analytics View -->
+            <section id="analytics" class="view">
+                <header class="view-header">
+                    <h1>Monthly Overview & Analysis</h1>
+                    <p>Deep dive into your performance data to find actionable insights</p>
+                </header>
+
+                <div class="analytics-grid">
+                    <div class="card glass chart-card full-width">
+                        <div class="card-header">
+                            <h3>Steps & Sleep Correlation Analysis</h3>
+                            <i data-lucide="bar-chart"></i>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="correlationChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card glass chart-card">
+                        <div class="card-header">
+                            <h3>Workout Volume Trend</h3>
+                            <i data-lucide="activity"></i>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="strainChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card glass summary-card">
+                        <div class="card-header">
+                            <h3>Monthly Averages</h3>
+                            <i data-lucide="calendar"></i>
+                        </div>
+                        <ul class="averages-list">
+                            <li>
+                                <span><i data-lucide="footprints"></i> Avg Steps</span>
+                                <strong id="avg-steps">0</strong>
+                            </li>
+                            <li>
+                                <span><i data-lucide="moon"></i> Avg Sleep</span>
+                                <strong id="avg-sleep">0h</strong>
+                            </li>
+                            <li>
+                                <span><i data-lucide="droplet"></i> Avg Water</span>
+                                <strong id="avg-water">0 L</strong>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Raw Data Table (New) -->
+                    <div class="card glass full-width">
+                        <div class="card-header">
+                            <h3>Raw Data Log</h3>
+                            <i data-lucide="table"></i>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Steps</th>
+                                        <th>Sleep (hrs)</th>
+                                        <th>Water (L)</th>
+                                        <th>Strain Score</th>
+                                        <th>Exercises Logged</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="data-table-body">
+                                    <!-- Injected by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Log Data View -->
+            <section id="log-data" class="view">
+                <header class="view-header">
+                    <h1>Log Daily Performance</h1>
+                    <p>Track your vitals and workouts</p>
+                </header>
+
+                <div class="log-grid">
+                    <!-- Daily Vitals Form -->
+                    <div class="card glass form-card">
+                        <div class="card-header">
+                            <h3>Daily Vitals</h3>
+                        </div>
+                        <form id="vitals-form" class="data-form">
+                            <div class="form-group">
+                                <label for="input-steps">Total Steps</label>
+                                <input type="number" id="input-steps" placeholder="e.g. 10000" min="0" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="input-sleep">Sleep (Hours)</label>
+                                <input type="number" id="input-sleep" placeholder="e.g. 8" min="0" step="0.1" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="input-water">Water (Liters)</label>
+                                <input type="number" id="input-water" placeholder="e.g. 2.5" min="0" step="0.1"
+                                    required>
+                            </div>
+                            <button type="submit" class="btn primary-btn">Save Vitals</button>
+                        </form>
+                    </div>
+
+                    <!-- Workout Form -->
+                    <div class="card glass form-card">
+                        <div class="card-header">
+                            <h3>Log Workout</h3>
+                        </div>
+                        <form id="workout-form" class="data-form">
+                            <div class="form-group">
+                                <label for="input-exercise">Exercise Name</label>
+                                <select id="input-exercise" required>
+                                    <option value="">Select exercise...</option>
+                                    <option value="chest">Bench Press (Chest)</option>
+                                    <option value="chest">Push-ups (Chest)</option>
+                                    <option value="chest">Incline Press (Chest)</option>
+                                    <option value="back">Pull-ups (Back)</option>
+                                    <option value="back">Barbell Row (Back)</option>
+                                    <option value="back">Lat Pulldown (Back)</option>
+                                    <option value="shoulders">Overhead Press (Shoulders)</option>
+                                    <option value="shoulders">Lateral Raises (Shoulders)</option>
+                                    <option value="legs">Squat (Legs)</option>
+                                    <option value="legs">Leg Press (Legs)</option>
+                                    <option value="legs">Deadlift (Legs/Back)</option>
+                                    <option value="arms">Bicep Curls (Arms)</option>
+                                    <option value="arms">Tricep Extensions (Arms)</option>
+                                    <option value="abs">Crunches (Abs)</option>
+                                    <option value="abs">Plank (Abs)</option>
+                                    <option value="cardio">Running (Cardio)</option>
+                                    <option value="cardio">Cycling (Cardio)</option>
+                                    <option value="cardio">Jump Rope (Cardio)</option>
+                                </select>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="input-sets">Sets</label>
+                                    <input type="number" id="input-sets" placeholder="e.g. 3" min="1" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="input-reps">Reps</label>
+                                    <input type="number" id="input-reps" placeholder="e.g. 10" min="1" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="input-weight">Weight (kg)</label>
+                                    <input type="number" id="input-weight" placeholder="e.g. 60" min="0">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn primary-btn">Add Exercise</button>
+                        </form>
+
+                        <div class="recent-workouts">
+                            <h4>Today's Logged Exercises</h4>
+                            <ul id="workout-list" class="workout-list">
+                                <!-- JS injected list -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="app.js"></script>
+</body>
+
+</html>
